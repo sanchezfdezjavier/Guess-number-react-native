@@ -16,10 +16,35 @@ import Colors from "../constants/colors";
 
 const StartGameScreen = (props) => {
 	const [enteredValue, setEnteredValue] = useState();
+	const [confirmed, setConfirmed] = useState(false);
+	const [selectedNumber, setSelectedNumber] = useState();
 
 	const numberInputHandler = (inputText) => {
 		setEnteredValue(inputText.replace(/[^0-9]/g, ""));
 	};
+
+	const resetInputHandler = () => {
+		setEnteredValue("");
+		setConfirmed(false);
+	};
+
+	const confirmInputHadler = () => {
+		const chosenNumber = parseInt(enteredValue);
+		if (chosenNumber === NaN || chosenNumber <= 0 || chosenNumber > 99) {
+			return;
+		}
+		setConfirmed(true);
+		// Although we clear the input before, the values won't update till next render cycle
+		// Is totally save to do it this way
+		setEnteredValue("");
+		setSelectedNumber(parseInt(enteredValue));
+	};
+
+	let confirmedOutput;
+
+	if (confirmed) {
+		confirmedOutput = <Text>Chosen number: {selectedNumber}</Text>;
+	}
 
 	return (
 		<TouchableWithoutFeedback
@@ -47,18 +72,19 @@ const StartGameScreen = (props) => {
 							<Button
 								title="Reset"
 								color={Colors.primary}
-								onPress={() => {}}
+								onPress={resetInputHandler}
 							/>
 						</View>
 						<View>
 							<Button
 								title="Confirm"
 								color={Colors.accent}
-								onPress={() => {}}
+								onPress={confirmInputHadler}
 							/>
 						</View>
 					</View>
 				</Card>
+				{confirmedOutput}
 			</View>
 		</TouchableWithoutFeedback>
 	);
